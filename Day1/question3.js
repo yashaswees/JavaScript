@@ -8,7 +8,10 @@ var UserInput = prompt("Enter fruit to search");
 for (var i = 0; i < fruits.length; i++) {
   if (fruits[i].name === UserInput) {
     console.log(fruits[i]);
-  } else if (i == fruits.length - 1) {
+    break; 
+  } 
+  
+  else if (i == fruits.length - 1) {
     console.log("no such data");
   }
 }

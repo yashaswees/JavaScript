@@ -1,0 +1,37 @@
+img{
+    object-fit: cover;
+    max-width:100%;
+}
+.imageContainer{
+    height: 75%;
+    display:flex;
+    overflow: hidden;
+    width: 30%;
+    margin:0 auto;
+    position:relative;
+}
+.slide{
+    transition: width 100ms;
+}
+.sideButton{
+    color:rgb(255, 254, 254);
+    display:flex;
+    position:absolute;
+    z-index: 1;
+    top:50%;
+    width:97%;
+    justify-content: space-between;
+    font-size: 20px;
+    padding:3px;
+}
+.prev:hover, .next:hover {
+    background-color: rgba(0,0,0,0.5);
+    cursor: pointer;
+  }
+  
+.dot{
+    color:black;
+    height: 15px;
+    width: 15px;
+}
+  
