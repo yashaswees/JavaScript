@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   showSlides(slideIndex);
 
   function currentSlide(n) {
-    console.log("eha pugyo");
+    console.log("here");
     showSlides(slideIndex = n);
   }
 
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (n < 1) {
       slideIndex = num.length;
     }
-    if (n > num.length) {
+    if (n >= num.length) {
       slideIndex = 1;
     }
     for (i = 0; i < num.length; i++) {
@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     dotNum[slideIndex-1].className += " active"; 
     // for automatic slideshow
-    slideIndex++;
-    setTimeout(() => showSlides(slideIndex), 5000);
+    slides= slideIndex++;
+    setTimeout(() => showSlides(slides), 2000);
   }
 
   function handleClick(event) {
@@ -42,9 +42,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (clickedButton.classList.contains("prev")) {
       console.log("Previous Button Clicked"); // Previous button clicked
       console.log(slideIndex);
-      showSlides((slideIndex -= 1));
+      showSlides((slideIndex -= 2));
     } else if (clickedButton.classList.contains("next")) {
-      showSlides((slideIndex += 1));
+      showSlides((slideIndex));
       console.log("Next Button Clicked"); // Next button clicked
       console.log(slideIndex);
     }
