@@ -27,15 +27,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     num[slideIndex - 1].style.width = "100%";
 
-    // for automatic slideshow
-    slideIndex++;
-    setTimeout(() => showSlides(slideIndex), 5000);
-
     // for active dots
     for (i = 0; i < dotNum.length; i++) {
       dotNum[i].className = dotNum[i].className.replace(" active", "");
     }
-    dotNum[slideIndex-2].className += " active";
+    dotNum[slideIndex-1].className += " active"; 
+    // for automatic slideshow
+    slideIndex++;
+    setTimeout(() => showSlides(slideIndex), 5000);
   }
 
   function handleClick(event) {
