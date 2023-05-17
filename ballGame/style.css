@@ -1,0 +1,22 @@
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+.container{
+    width:400px;
+    height:400px;
+    margin:40px auto;
+    border: 1px solid black;
+    position:relative;
+    background-color: rgba(255, 255, 255, 0.267);
+}
+
+.ball{
+    background-color:rgb(109, 186, 254);
+    border: 0.0001em solid black;
+    border-radius: 50%;
+    width:20px;
+    height:20px;
+    position: absolute;
+}
