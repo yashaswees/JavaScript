@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
   showSlides(slideIndex);
 
   function currentSlide(n) {
-    showSlides((slideIndex = n));
+    console.log("eha pugyo");
+    showSlides(slideIndex = n);
   }
 
   function showSlides(n) {
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
       num[i].style.width = "0%";
     }
     num[slideIndex - 1].style.width = "100%";
+
     // for automatic slideshow
     slideIndex++;
     setTimeout(() => showSlides(slideIndex), 5000);
@@ -33,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     for (i = 0; i < dotNum.length; i++) {
       dotNum[i].className = dotNum[i].className.replace(" active", "");
     }
-    dotNum[slideIndex - 2].className += " active";
+    dotNum[slideIndex-2].className += " active";
   }
 
   function handleClick(event) {
