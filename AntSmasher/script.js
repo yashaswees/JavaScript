@@ -39,14 +39,14 @@ class Game {
   moveAnt(ant) {
     const containerWidth = this.container.offsetWidth;
     const containerHeight = this.container.offsetHeight;
-    const antSize = 45;
+    const ANTSIZE = 45;
 
     ant.x += ant.dx;
     ant.y += ant.dy;
 
     // Check for collision with container boundaries
     if (ant.x + 24 >= containerWidth) {
-      ant.x = containerWidth - antSize; // Set ant at right boundary
+      ant.x = containerWidth - ANTSIZE; // Set ant at right boundary
       ant.dx *= -1; // Reverse direction
     } else if (ant.x < 0) {
       ant.x = 0; // Set position at left boundary(to make boundary condition efficient)
@@ -54,12 +54,13 @@ class Game {
     }
 
     if (ant.y + 40 >= containerHeight) {
-      ant.y = containerHeight - antSize; // Set ant at bottom boundary
+      ant.y = containerHeight - ANTSIZE; // Set ant at bottom boundary
       ant.dy *= -1; // Reverse direction
     } else if (ant.y < 0) {
       ant.y = 0; // Set position at top boundary(to make boundary condition efficient)
       ant.dy *= -1; // Reverse direction
     }
+
     // Update ant position
     ant.element.style.left = ant.x + "px";
     ant.element.style.top = ant.y + "px";
@@ -70,7 +71,6 @@ class Game {
     const dy = antA.y - antB.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < 30) {
-      console.log("collision detected");
       return true;
     } else {
       return false;
@@ -88,6 +88,7 @@ class Game {
     antA.dy = antB.dy;
     antB.dx = tempDx;
     antB.dy = tempDy;
+
     //change degree of rotation of ant
     antA.element.style.transform = `rotate(${antA.rotation}deg)`;
     antB.element.style.transform = `rotate(${antB.rotation}deg)`;
@@ -112,8 +113,8 @@ class Game {
     for (let i = 0; i < this.num; i++) {
       const x = this.randomValue(0, 390);
       const y = this.randomValue(0, 390);
-      const dx = this.randomValue(-2, 2);
-      const dy = this.randomValue(-2, 2);
+      const dx = this.randomValue(-1, 3);
+      const dy = this.randomValue(-1, 3);
       const newAnt = new Ant(x, y, dx, dy);
       this.ants.push(newAnt);
 
@@ -122,7 +123,7 @@ class Game {
 
     //moving and updating collision
     setInterval(() => {
-      // Move ants with bouncing effect
+      // bouncing ants
       this.ants.forEach((ant) => this.moveAnt(ant));
 
       // Update collisions
@@ -134,15 +135,15 @@ class Game {
     for (let i = 0; i < this.ants.length; i++) {
       const currentAnt = this.ants[i];
       if (currentAnt === ant) {
-        const killSound = document.getElementById("killSound");// play squish sound when killed
+        const killSound = document.getElementById("killSound"); // play squish sound when killed
         killSound.play();
         this.ants.splice(i, 1); // Remove the ant
         const bloodyElement = document.createElement("div");
         bloodyElement.classList.add("bloody");
-       
-        bloodyElement.style.left = ant.x + "px";// so that blood is seen at the position where the ant is killed
+
+        bloodyElement.style.left = ant.x + "px"; // so that blood is seen at the position where the ant is killed
         bloodyElement.style.top = ant.y + "px";
-  
+
         // Append the bloody element to the container
         this.container.appendChild(bloodyElement);
         this.container.removeChild(ant.element);
@@ -150,13 +151,12 @@ class Game {
           this.container.removeChild(bloodyElement);
         }, 2000);
         score++;
-        scoreBoard();     
+        scoreBoard();
         break;
       }
     }
   }
 }
-
 
 let score = 0;
 
@@ -164,17 +164,16 @@ function scoreBoard() {
   const antsKilledElement = document.getElementById("killed");
   const gameOverElement = document.getElementById("gameOver");
 
-  antsKilledElement.style.marginLeft = '50%';
-  gameOverElement.style.marginLeft = '50%';
+  antsKilledElement.style.marginLeft = "50%";
+  gameOverElement.style.marginLeft = "50%";
   antsKilledElement.textContent = `Ants Killed: ${score}`;
 
   if (score == 10) {
-    gameOverElement.innerHTML = "Game Over";
+    gameOverElement.innerHTML = "Ant Over";
   } else {
-    gameOverElement.innerHTML = ""; 
+    gameOverElement.innerHTML = "";
   }
 }
-
 
 const antGame = new Game(10);
 antGame.init();
