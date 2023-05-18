@@ -1,11 +1,14 @@
-let score=0;
-
 class Ant {
   constructor(x, y, dx, dy) {
     this.x = x;
     this.y = y;
     this.dx = dx;
     this.dy = dy;
+  }
+  rotate() {
+    const angle = Math.atan2(this.dy, this.dx);
+    const degrees = (angle * 180) / Math.PI;
+    this.rotation = degrees;
   }
 }
 
@@ -28,11 +31,10 @@ class Game {
     antElement.classList.add("ant");
     antElement.style.left = ant.x + "px";
     antElement.style.top = ant.y + "px";
-    antElement.addEventListener("click", () => this.killAnt(ant))// calls killAnt method
+    antElement.addEventListener("click", () => this.killAnt(ant)); // calls killAnt method
     this.container.appendChild(antElement);
     ant.element = antElement;
   }
-
 
   moveAnt(ant) {
     const containerWidth = this.container.offsetWidth;
@@ -58,7 +60,6 @@ class Game {
       ant.y = 0; // Set position at top boundary(to make boundary condition efficient)
       ant.dy *= -1; // Reverse direction
     }
-
     // Update ant position
     ant.element.style.left = ant.x + "px";
     ant.element.style.top = ant.y + "px";
@@ -70,13 +71,16 @@ class Game {
     const distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < 30) {
       console.log("collision detected");
-      return true; 
-    } 
-    else 
-    return false;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   handleCollision(antA, antB) {
+    const angleA = antA.rotate();
+    const angleB = antB.rotate();
+
     // Reverse the direction of both ants
     const tempDx = antA.dx; // temporary var for swapping
     const tempDy = antA.dy;
@@ -84,7 +88,10 @@ class Game {
     antA.dy = antB.dy;
     antB.dx = tempDx;
     antB.dy = tempDy;
-    console.log("collision handled");
+    //change degree of rotation of ant
+    antA.element.style.transform = `rotate(${antA.rotation}deg)`;
+    antB.element.style.transform = `rotate(${antB.rotation}deg)`;
+    return { angleA, angleB };
   }
 
   updateCollisions() {
@@ -94,7 +101,6 @@ class Game {
         const antB = this.ants[j];
         if (this.detectCollision(antA, antB)) {
           this.handleCollision(antA, antB);
-          console.log("collision updated");
         }
       }
     }
@@ -114,38 +120,61 @@ class Game {
       this.drawAnt(newAnt);
     }
 
+    //moving and updating collision
     setInterval(() => {
       // Move ants with bouncing effect
       this.ants.forEach((ant) => this.moveAnt(ant));
 
       // Update collisions
       this.updateCollisions();
-    }, 50);
+    }, 9);
   }
- 
+
   killAnt(ant) {
-    
-    
     for (let i = 0; i < this.ants.length; i++) {
       const currentAnt = this.ants[i];
       if (currentAnt === ant) {
-        this.ants.splice(i, 1); // Remove the ant from the array
-        this.container.removeChild(ant.element); 
+        const killSound = document.getElementById("killSound");// play squish sound when killed
+        killSound.play();
+        this.ants.splice(i, 1); // Remove the ant
+        const bloodyElement = document.createElement("div");
+        bloodyElement.classList.add("bloody");
+       
+        bloodyElement.style.left = ant.x + "px";// so that blood is seen at the position where the ant is killed
+        bloodyElement.style.top = ant.y + "px";
+  
+        // Append the bloody element to the container
+        this.container.appendChild(bloodyElement);
+        this.container.removeChild(ant.element);
+        setTimeout(() => {
+          this.container.removeChild(bloodyElement);
+        }, 2000);
         score++;
-        scoreBoard();
-        console.log(score);
-        // Remove the ant element from the container
+        scoreBoard();     
         break;
       }
     }
   }
 }
 
-function scoreBoard(){
-  const antsKilledElement = document.getElementById('killed');
-  antsKilledElement.innerHTML = `Ants Killed: ${score}`;
-  // console.log(antsKilledElement);
+
+let score = 0;
+
+function scoreBoard() {
+  const antsKilledElement = document.getElementById("killed");
+  const gameOverElement = document.getElementById("gameOver");
+
+  antsKilledElement.style.marginLeft = '50%';
+  gameOverElement.style.marginLeft = '50%';
+  antsKilledElement.textContent = `Ants Killed: ${score}`;
+
+  if (score == 10) {
+    gameOverElement.innerHTML = "Game Over";
+  } else {
+    gameOverElement.innerHTML = ""; 
+  }
 }
+
 
 const antGame = new Game(10);
 antGame.init();
