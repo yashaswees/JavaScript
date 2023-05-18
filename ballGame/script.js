@@ -16,7 +16,7 @@ class Ball {
       this.num = num;
     }
   
-    getRandomValue(minWidth, maxWidth) {
+    randomValue(minWidth, maxWidth) {
       return Math.random() * (maxWidth - minWidth) + minWidth;
     }
   
@@ -68,17 +68,20 @@ class Ball {
       const dx = ballA.x - ballB.x;
       const dy = ballA.y - ballB.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
+      console.log("collision detected"); 
       return distance < 20; // Adjust the value to set the collision threshold
+      
     }
   
     handleCollision(ballA, ballB) {
       // Reverse the direction of both balls
-      const tempDx = ballA.dx;//temporary var
+      const tempDx = ballA.dx;//temporary var for swapping
       const tempDy = ballA.dy;
       ballA.dx = ballB.dx;
       ballA.dy = ballB.dy;
       ballB.dx = tempDx;
       ballB.dy = tempDy;
+      console.log('collision handled')
     }
   
     updateCollisions() {
@@ -91,18 +94,19 @@ class Ball {
           }
         }
       }
+      console.log("collision updated");
     }
   
     init() {
       this.container = document.querySelector(".container");
-  
       // Generate and add balls
+
       for (let i = 0; i < this.num; i++) {
-        const x = this.getRandomValue(0, 370);
-        const y = this.getRandomValue(0, 370);
+        const x = this.randomValue(10, 390);
+        const y = this.randomValue(10, 390);
         console.log(x,y);
-        const dx = this.getRandomValue(-2, 2);
-        const dy = this.getRandomValue(-2, 2);
+        const dx = this.randomValue(-2, 2);
+        const dy = this.randomValue(-2, 2);
   
         this.balls.push(new Ball(x, y, dx, dy));
       }
@@ -110,14 +114,13 @@ class Ball {
       // Draw first state of balls
       this.balls.forEach((ball) => this.drawBall(ball));
   
-      // Start animation loop
       setInterval(() => {
         // Move balls with bouncing effect
         this.balls.forEach((ball) => this.moveBall(ball));
   
         // Update collisions
         this.updateCollisions();
-      }, 1);
+      }, 5);
     }
   }
   
