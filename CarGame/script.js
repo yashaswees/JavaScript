@@ -104,6 +104,7 @@ class Game {
     this.bulletImage = new Image();
     this.bulletImage.src = "bullet.png";
     this.ammo=0;
+    
     this.playerCar = new PlayerCar(
       this.myCarLane * LANE_WIDTH + LANE_WIDTH / 2,
       HEIGHT - CAR_HEIGHT,
@@ -121,6 +122,9 @@ class Game {
     };
   }
   fireBullet() {
+    const shot= document.getElementById("shot");
+
+    shot.play();
     console.log('bullet fired');
     const bullet = new Bullet(
       this.playerCar.x - this.bulletImage.width / 2,
@@ -191,6 +195,7 @@ class Game {
     this.ctx.textAlign = "start";
     this.ctx.font = "20px bolder";
     this.ctx.fillText("Score: " + this.score, WIDTH / 10, 25);
+    this.ctx.fillText("Ammo: " + this.ammo, WIDTH / 2 , 25);
 
     // Draw the player's car
     this.playerCar.draw(this.ctx);
@@ -231,6 +236,7 @@ class Game {
   update() {
     const currentTime = Date.now();
     const elapsedTime = currentTime - this.lastCarSpawnTime;
+    const crash= document.getElementById("crash");
 
     if (elapsedTime > 2000 - this.score * 40) {
       this.spawnCar();
@@ -241,6 +247,7 @@ class Game {
       const car = this.cars[i];
       car.update();
 
+      // to remove 
       if (car.y > HEIGHT) {
         this.cars.splice(i, 1);
         i--;
@@ -258,6 +265,37 @@ class Game {
         console.log(this.score);
       }
 
+      for (let j = 0; j < this.bullets.length; j++) {
+        const bullet = this.bullets[j];
+  
+        if (
+          bullet.x < car.x + CAR_WIDTH &&
+          bullet.x + bullet.width > car.x &&
+          bullet.y < car.y + CAR_HEIGHT &&
+          bullet.y + bullet.height > car.y
+        ) {
+          // Bullet collided with car
+          this.bullets.splice(j, 1);
+          j--;
+          this.cars.splice(i, 1);
+          i--;
+          this.score++;
+          if (this.score % 5 === 0) {
+            this.ammo++;
+            if (this.ammo > 5) {
+              this.ammo = 5;
+            }
+            if (this.ammo < 0) {
+              this.ammo = 0;
+            }
+          }
+
+          console.log(this.score);
+          break;
+        }
+      }
+      
+
       // collision condition
       if (
         this.playerCar.x < car.x + CAR_WIDTH &&
@@ -265,6 +303,7 @@ class Game {
         this.playerCar.y < car.y + CAR_HEIGHT &&
         this.playerCar.y + CAR_HEIGHT > car.y
       ) {
+        crash.play();
         this.gameOver();
         break;
       }
