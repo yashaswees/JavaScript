@@ -237,7 +237,7 @@ class Game {
     const elapsedTime = currentTime - this.lastCarSpawnTime;
     const crash = document.getElementById("crash");
 
-    if (elapsedTime > 2000 - this.score * 40) {
+    if (elapsedTime > 2000 - this.score * 30) {
       this.spawnCar();
       this.lastCarSpawnTime = currentTime;
     }
