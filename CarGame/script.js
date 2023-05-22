@@ -103,8 +103,8 @@ class Game {
     this.bullets = [];
     this.bulletImage = new Image();
     this.bulletImage.src = "bullet.png";
-    this.ammo=0;
-    
+    this.ammo = 0;
+
     this.playerCar = new PlayerCar(
       this.myCarLane * LANE_WIDTH + LANE_WIDTH / 2,
       HEIGHT - CAR_HEIGHT,
@@ -122,10 +122,9 @@ class Game {
     };
   }
   fireBullet() {
-    const shot= document.getElementById("shot");
+    const shot = document.getElementById("shot");
 
     shot.play();
-    console.log('bullet fired');
     const bullet = new Bullet(
       this.playerCar.x - this.bulletImage.width / 2,
       this.playerCar.y,
@@ -154,17 +153,17 @@ class Game {
   }
 
   start() {
-    this.isGameOver = false; // Reset the game over flag
-    this.score = 0; // Reset the score
-    this.cars = []; // Clear the cars array
+    this.isGameOver = false; 
+    this.score = 0; 
+    this.cars = []; 
 
     // Reset the player's car position
     this.playerCar.x = this.myCarLane * LANE_WIDTH + LANE_WIDTH / 2;
     this.playerCar.y = HEIGHT - CAR_HEIGHT;
 
-    this.lastCarSpawnTime = Date.now(); // Reset the car spawn time
+    this.lastCarSpawnTime = Date.now(); 
 
-    // Start the game loop
+    // Start game loop
     this.run();
   }
 
@@ -195,12 +194,12 @@ class Game {
     this.ctx.textAlign = "start";
     this.ctx.font = "20px bolder";
     this.ctx.fillText("Score: " + this.score, WIDTH / 10, 25);
-    this.ctx.fillText("Ammo: " + this.ammo, WIDTH / 2 , 25);
+    this.ctx.fillText("Ammo: " + this.ammo, WIDTH / 2, 25);
 
-    // Draw the player's car
+    // Draw player car
     this.playerCar.draw(this.ctx);
 
-    // Draw the cars
+    // Draw other cars
     for (const car of this.cars) {
       car.draw(this.ctx);
     }
@@ -208,7 +207,7 @@ class Game {
       this.drawGameOverText();
     }
   }
-
+  // for gameover text
   drawGameOverText() {
     this.ctx.font = "48px bolder";
     this.ctx.fillStyle = WHITE;
@@ -222,7 +221,7 @@ class Game {
     } else if (event.key === "ArrowRight") {
       this.playerCar.moveRight();
     }
-    if (event.key === "ArrowUp" && this.ammo >= 1 ) {;
+    if (event.key === "ArrowUp" && this.ammo >= 1) {
       this.fireBullet();
       this.ammo--;
     }
@@ -236,7 +235,7 @@ class Game {
   update() {
     const currentTime = Date.now();
     const elapsedTime = currentTime - this.lastCarSpawnTime;
-    const crash= document.getElementById("crash");
+    const crash = document.getElementById("crash");
 
     if (elapsedTime > 2000 - this.score * 40) {
       this.spawnCar();
@@ -247,27 +246,25 @@ class Game {
       const car = this.cars[i];
       car.update();
 
-      // to remove 
+      // to remove car
       if (car.y > HEIGHT) {
         this.cars.splice(i, 1);
         i--;
         this.score++;
-        if (this.score % 5 === 0){
+        if (this.score % 5 === 0) {
           this.ammo++;
-          console.log("ammo is" , this.ammo)
-          if (this.ammo >5){
-            this.ammo=5;
+          if (this.ammo > 5) {
+            this.ammo = 5;
           }
-          if (this.ammo<0){
-            this.ammo=0;
+          if (this.ammo < 0) {
+            this.ammo = 0;
           }
         }
-        console.log(this.score);
       }
 
       for (let j = 0; j < this.bullets.length; j++) {
         const bullet = this.bullets[j];
-  
+
         if (
           bullet.x < car.x + CAR_WIDTH &&
           bullet.x + bullet.width > car.x &&
@@ -290,11 +287,9 @@ class Game {
             }
           }
 
-          console.log(this.score);
           break;
         }
       }
-      
 
       // collision condition
       if (
@@ -314,8 +309,6 @@ class Game {
   }
 
   gameOver() {
-    console.log("gameover");
-
     this.stop();
   }
 
