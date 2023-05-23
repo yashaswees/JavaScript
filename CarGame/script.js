@@ -293,7 +293,7 @@ class Game {
 
       // collision condition
       if (
-        this.playerCar.x < car.x + CAR_WIDTH &&
+        this.playerCar.x < car.x + CAR_WIDTH && //checks if collision is taking between playercar adn other car
         this.playerCar.x + CAR_WIDTH > car.x &&
         this.playerCar.y < car.y + CAR_HEIGHT &&
         this.playerCar.y + CAR_HEIGHT > car.y
