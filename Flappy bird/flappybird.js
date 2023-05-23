@@ -4,9 +4,10 @@ const gravity = 0.09;
 const birdHeight = 40;
 const birdWidth = 50;
 const obstacleWidth = 80;
-const obstacleGap = 300; // Gap between upper obstacle and lower obstacle
-const obstacleInterval = 2500; // Time between two obstacles = 3s
-
+const WHITE = "#ffffff";
+const BLACK= "#000000";
+const obstacleGap = 250; // Gap between upper obstacle and lower obstacle
+const obstacleInterval = 2500; // Time between two obstacles = 2.5s
 class Bird {
   constructor(x, y, imageSrc, game) {
     this.x = x;
@@ -60,14 +61,19 @@ class Obstacle {
 class Game {
   constructor() {
     this.isGameOver = false;
-    this.bird = new Bird(30, Height/2, "./flappy-bird.png", this);
+    this.bird = new Bird(30, Height / 2, "./flappy-bird.png", this);
     this.obstacles = [];
-    this.score=0;
+    this.score = 0;
+    this.scoreboard = document.getElementById("scoreboard");
+    this.ctx=null;
   }
+  
+
   start() {
     console.log("reached start");
     this.generateObstacles();
     this.run();
+    this.ctx = board.getContext("2d");
   }
   generateObstacles() {
     setInterval(() => {
@@ -88,9 +94,9 @@ class Game {
       const lowerObstacle = new Obstacle(
         Width,
         randomHeight + obstacleGap,
-        Height - randomHeight - obstacleGap, 
+        Height - randomHeight - obstacleGap,
         lowerImageSrc,
-        upperImageSrc
+        lowerImageSrc
       );
       this.obstacles.push(upperObstacle, lowerObstacle);
     }, obstacleInterval);
@@ -100,15 +106,14 @@ class Game {
     const birdRight = this.bird.x + birdWidth;
     const birdTop = this.bird.y;
     const birdBottom = this.bird.y + birdHeight;
-    let collisionDetected=false; //variable for increasing score when collision doesn't take place
-  
-    for (let i = 0; i < this.obstacles.length; i += 2) {
+
+    for (let i = 0; i < this.obstacles.length - 1; i += 2) {
       const upperObstacle = this.obstacles[i];
       const lowerObstacle = this.obstacles[i + 1];
-  
+
       const upperObstacleBottom = upperObstacle.y + upperObstacle.height;
       const lowerObstacleTop = lowerObstacle.y;
-  
+
       // Check collision with upper obstacle
       if (
         birdRight > upperObstacle.x &&
@@ -116,12 +121,11 @@ class Game {
         birdBottom > upperObstacle.y &&
         birdTop < upperObstacleBottom
       ) {
-        collisionDetected=true;
-        console.log('collision detected upper');
+        console.log("collision detected upper");
         this.gameOver();
         break;
       }
-  
+
       // Check collision with lower obstacle
       if (
         birdRight > lowerObstacle.x &&
@@ -129,8 +133,7 @@ class Game {
         birdTop < lowerObstacle.y + Height &&
         birdBottom > lowerObstacleTop
       ) {
-        collisionDetected=true;
-        console.log('collision detected lower');
+        console.log("collision detected lower");
         this.gameOver();
         break;
       }
@@ -146,21 +149,33 @@ class Game {
       obstacle.draw(context);
     }
   }
+  drawGameOverText() {
+    const canvas = document.getElementById("board");
+    this.ctx = canvas.getContext("2d");
+    this.ctx.font = "48px bolder";
+    this.ctx.fillStyle = BLACK;
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("GAME OVER", Width / 2, Height / 2+16);
+  }
+
 
   update() {
+    updateScore(this.score);
     this.bird.velocityY += gravity; // Apply gravity to the velocity
     this.bird.y += this.bird.velocityY; // Update the bird's position using the velocity
     for (let i = 0; i < this.obstacles.length; i++) {
       const obstacle = this.obstacles[i];
       obstacle.move();
-
+      
       // Remove obstacles that are off the screen
       if (obstacle.x + obstacleWidth < 0) {
         this.obstacles.splice(i, 1);
         i--;
-        this.score +=0.5;
+        this.score += 0.5;
         console.log(this.score);
-      } 
+        updateScore(this.score);
+        break;
+      }
     }
     if (this.bird.y > Height - 100 || this.bird.y < 0) {
       this.gameOver();
@@ -174,10 +189,12 @@ class Game {
       this.draw();
     }
   }
-
   gameOver() {
+    setTimeout(() => {
+      this.drawGameOverText();
+    }, 100); // Adjust the delay as needed
     console.log("gameover");
-    this.isGameOver = true;
+    this.stop();
   }
 
   run() {
@@ -199,11 +216,33 @@ class Game {
 
 const game = new Game();
 
+function updateScore(score) {
+  const scoreboard = document.getElementById("scoreboard");
+  const highScoreElement = document.getElementById("highScore");
+
+  const currentHighScore = parseInt(localStorage.getItem("highScore")) || 0;
+  const updatedHighScore = isNaN(currentHighScore) ? 0 : currentHighScore;
+  const newHighScore = Math.max(score, updatedHighScore);
+
+  highScoreElement.textContent = "High Score: " + newHighScore;
+
+  localStorage.setItem("highScore", newHighScore.toString());
+
+  scoreboard.textContent = "Score: " + score;
+
+  // Display constant high score from the beginning
+  if (score === 0) {
+    highScoreElement.textContent = "High Score: " + currentHighScore;
+  }
+}
+
+
+
+
 window.onload = function () {
   const board = document.getElementById("board");
   board.height = Height;
   board.width = Width;
-  game.draw();
   game.start();
 
   window.addEventListener("keydown", function (event) {

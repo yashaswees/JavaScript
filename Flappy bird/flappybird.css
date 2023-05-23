@@ -6,3 +6,12 @@ body{
 #board{
     background-image: url("./flappybirdbg.png");
 }
+.score{
+    display:flex;
+    width:20%;
+    margin: 0 600px;
+    justify-content: space-between;
+}
+.scoreboard{
+    margin-left: 100px;
+}
