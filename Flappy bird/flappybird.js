@@ -71,8 +71,8 @@ class Game {
   start() {
     this.resetGame();
     this.generateObstacles();
-    this.run();
     this.ctx = board.getContext("2d");
+    this.run();
   }
 
   generateObstacles() {
@@ -121,7 +121,6 @@ class Game {
         birdBottom > upperObstacle.y &&
         birdTop < upperObstacleBottom
       ) {
-        console.log("collision detected upper");
         this.gameOver();
         break;
       }
@@ -133,7 +132,6 @@ class Game {
         birdTop < lowerObstacle.y + Height &&
         birdBottom > lowerObstacleTop
       ) {
-        console.log("collision detected lower");
         this.gameOver();
         break;
       }
@@ -171,7 +169,6 @@ class Game {
         this.obstacles.splice(i, 1);
         i--;
         this.score += 0.5;
-        console.log(this.score);
         updateScore(this.score);
         break;
       }
@@ -184,6 +181,8 @@ class Game {
 
   handleEvent(event) {
     if (event.key === "ArrowUp") {
+      const jump = document.getElementById("jump");
+      jump.play();
       this.bird.moveUp();
       this.draw();
     }
@@ -192,7 +191,6 @@ class Game {
     setTimeout(() => {
       this.drawGameOverText();
     }, 100); // Adjust the delay as needed
-    console.log("gameover");
     this.stop();
   }
 
