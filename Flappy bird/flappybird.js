@@ -5,7 +5,7 @@ const birdHeight = 40;
 const birdWidth = 50;
 const obstacleWidth = 80;
 const WHITE = "#ffffff";
-const BLACK= "#000000";
+const BLACK = "#000000";
 const obstacleGap = 250; // Gap between upper obstacle and lower obstacle
 const obstacleInterval = 2500; // Time between two obstacles = 2.5s
 class Bird {
@@ -65,16 +65,16 @@ class Game {
     this.obstacles = [];
     this.score = 0;
     this.scoreboard = document.getElementById("scoreboard");
-    this.ctx=null;
+    this.ctx = null;
   }
-  
 
   start() {
-    console.log("reached start");
+    this.resetGame();
     this.generateObstacles();
     this.run();
     this.ctx = board.getContext("2d");
   }
+
   generateObstacles() {
     setInterval(() => {
       const minHeight = 150;
@@ -155,9 +155,8 @@ class Game {
     this.ctx.font = "48px bolder";
     this.ctx.fillStyle = BLACK;
     this.ctx.textAlign = "center";
-    this.ctx.fillText("GAME OVER", Width / 2, Height / 2+16);
+    this.ctx.fillText("GAME OVER", Width / 2, Height / 2 + 16);
   }
-
 
   update() {
     updateScore(this.score);
@@ -166,7 +165,7 @@ class Game {
     for (let i = 0; i < this.obstacles.length; i++) {
       const obstacle = this.obstacles[i];
       obstacle.move();
-      
+
       // Remove obstacles that are off the screen
       if (obstacle.x + obstacleWidth < 0) {
         this.obstacles.splice(i, 1);
@@ -212,6 +211,18 @@ class Game {
   stop() {
     this.isGameOver = true;
   }
+
+  resetGame() {
+    console.log("inreset");
+    this.isGameOver = false;
+    this.obstacles = [];
+    this.score = 0;
+    updateScore(this.score);
+
+    const highScoreElement = document.getElementById("highScore");
+    const currentHighScore = parseInt(localStorage.getItem("highScore")) || 0;
+    highScoreElement.textContent = "High Score: " + currentHighScore;
+  }
 }
 
 const game = new Game();
@@ -236,16 +247,24 @@ function updateScore(score) {
   }
 }
 
-
-
-
 window.onload = function () {
   const board = document.getElementById("board");
   board.height = Height;
   board.width = Width;
-  game.start();
+  const startButton = document.querySelector(".start");
+  let game = null;
+
+  startButton.addEventListener("click", function () {
+    if (game) {
+      game.stop(); // Stop the current game if it's running
+    }
+    game = new Game(); // Create a new game instance
+    game.start();
+  });
 
   window.addEventListener("keydown", function (event) {
-    game.handleEvent(event);
+    if (game) {
+      game.handleEvent(event);
+    }
   });
 };

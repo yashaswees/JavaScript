@@ -9,9 +9,24 @@ body{
 .score{
     display:flex;
     width:20%;
-    margin: 0 600px;
+    margin: 0 45%;
     justify-content: space-between;
 }
 .scoreboard{
     margin-left: 100px;
+}
+.start{
+    color:white;
+    background-color: rgb(98, 183, 198);
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight:800;
+    padding: 20px;
+    border-radius: 10px;
+    border: transparent;
+    float: left;
+    transform: translate(350%, 100%);
+}
+.start:hover{
+background-color:rgb(62, 203, 114);
+cursor:pointer;
 }
